@@ -1,35 +1,34 @@
 #include "main.h"
+#include <limits.h>
+#include <stdio.h>
+
 /**
- * _printf - printf function
- * @format: output format
- *
- * Return: number of printed characters
+ * _printf - produces output according to a format
+ * @format: format string containing the characters and the specifiers
+ * Description: this function will call the get_print() function that will
+ * determine which printing function to call depending on the conversion
+ * specifiers contained into fmt
+ * Return: length of the formatted output string
  */
 int _printf(const char *format, ...)
 {
-	int i, flags, width, precision, size;
-	int printed = 0;
-	int printed_chars = 0;
-	int buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	int (*pfunc)(va_list, flags_t *);
+	const char *p;
+	va_list arguments;
+	flags_t flags = {0, 0, 0};
 
-	if (format == NULL)
+	register int count = 0;
+
+	va_start(arguments, format);
+	if (!format || (format[0] == '%' && !format[1]))
 		return (-1);
-	va_start(list, format);
-
-	for (i = 0; format && format[i] != '\0'; i++)
+	if (format[0] == '%' && format[1] == ' ' && !format[2])
+		return (-1);
+	for (p = format; *p; p++)
 	{
-		if (format[i] != '%')
+		if (*p == '%')
 		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-
-			printed_chars++;
-		}
-		else
-		{
+<<<<<<< HEAD
 			print_buffer(buffer, &buff_ind);
 			flags = get_flags(format, &i);
 			width = get_width(format, &i, list);

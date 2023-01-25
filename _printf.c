@@ -1,5 +1,4 @@
 #include "main.h"
-
 /**
  * _printf - printf function
  * @format: output format
@@ -63,3 +62,4 @@ void print_buffer(char buffer[], int *buff_ind)
 
 	*buff_ind = 0;
 }
+>>>>>>> collab

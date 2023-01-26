@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdio.h>
 
 /**
  * _printf - printf function
@@ -8,58 +9,42 @@
  */
 int _printf(const char *format, ...)
 {
-	int i, flags, width, precision, size;
-	int printed = 0;
-	int printed_chars = 0;
-	int buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	int count = -1;
 
-	if (format == NULL)
-		return (-1);
-	va_start(list, format);
-
-	for (i = 0; format && format[i] != '\0'; i++)
+	if (format != NULL)
 	{
-		if (format[i] != '%')
-		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
+		int i;
+		va_list ar_list;
+		int (*o)(va_list);
 
-			printed_chars++;
-		}
-		else
-		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
-			++i;
-			printed = handle_print(format, &i, list, buffer, flags,
-					width, precision, size);
+		va_start(ar_list, format);
 
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
+		if (format[0] == '%' && format[1] == '\0')
+			return (-1);
+
+		count = 0;
+
+		for (i = 0; format[i] != '\0'; i++)
+		{
+			if (format[i] == '%')
+			{
+				if (format[i + 1] == '%')
+				{
+					count += putchar(format[i]);
+					i++;
+				}
+				else if (format[i + 1] != '\0')
+				{
+					o = get_func(format[i + 1]);
+					count += (o ? o(ar_list) : putchar(format[i]) + putchar(format[i + 1]));
+					i++;
+				}
+			}
+			else
+				count += putchar(format[i]);
 		}
+		va_end(ar_list);
 	}
-	print_buffer(buffer, &buff_ind);
-	va_end(list);
-	return (printed_chars);
-}
-/**
- * print_buffer - print buffer content
- * @buffer: content
- * @buff_ind: buffer index
- *
- * Return: nothing
- */
-void print_buffer(char buffer[], int *buff_ind)
-{
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
 
-	*buff_ind = 0;
+	return (count);
 }

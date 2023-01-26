@@ -183,3 +183,5 @@ int print_rot13string(va_list types, char buffer[], int flags, int width,
 			count++;
 		}
 	}
+	return (count);
+}

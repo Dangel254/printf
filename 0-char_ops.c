@@ -31,7 +31,7 @@ int print_s(va_list ar_list)
 	if (str == NULL)
 		str = "(null)";
 
-	for (i = 0; str[i];i++)
+	for (i = 0; str[i]; i++)
 		count += putchar(str[i]);
 
 	return (count);
